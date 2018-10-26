@@ -63,7 +63,7 @@ namespace JWT_Demo.Controllers
                 }
             }
 
-            return BadRequest("Could not create token");
+            return BadRequest("The username & password provided do not match our records.");
         }
 
         [AllowAnonymous]
