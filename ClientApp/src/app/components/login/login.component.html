@@ -1,0 +1,67 @@
+<div class="login-body">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <h2>Login</h2>
+    <p *ngIf="isUnauthorizedUser" class="alert alert-danger">{{unauthorizedUserMessage}}</p>
+    <div class="login-form-group">
+      <div class="img-wrapper">
+        <img src="../../assets/icons/006-user.svg">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input class="form-control"
+               [class.is-valid]="username.valid"
+               [class.is-invalid]="username.invalid && (username.dirty || username.touched)"
+               formControlName="username"
+               type="text"
+               required
+               (keyup)="onInput()" />
+        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="alert alert-danger">
+          <span class="invalid-feedback" *ngIf="username.errors.required">
+            Provide your username.
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="login-form-group">
+      <div class="img-wrapper">
+        <img src="../../assets/icons/022-vintage-key-outline.svg">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control"
+               [class.is-valid]="password.valid"
+               [class.is-invalid]="password.invalid && (password.dirty || password.touched)"
+               formControlName="password"
+               type="password"
+               required
+               (keyup)="onInput()" />
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+          <span class="invalid-feedback" *ngIf="password.errors.required">
+            Enter your password.
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="login-form-group">
+      <div class="form-group">
+        <label class="remember-me">
+          <input #rememberMe class="form-control"
+                 type="checkbox" />
+          Remember Me
+        </label>
+      </div>
+    </div>
+    <div *ngIf="loginForm.invalid && loginForm.errors && (loginForm.diry || loginForm.touched)" class="alert alert-danger form-control">
+      <span class="invalid-feedback">
+        {{loginForm.errors}}
+      </span>
+    </div>
+    <div class="container-nooverflow">
+      <button class="btn btn-primary bevel bevel-md">Login</button>
+      <div class="login-form-links">
+        <a routerLink="/register">Register</a>
+        <a routerLink="/forgotpassword">Forgot Password?</a>
+      </div>
+    </div>
+  </form>
+</div>

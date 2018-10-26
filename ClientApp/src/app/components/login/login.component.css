@@ -1,0 +1,143 @@
+hr {
+  width: 80%;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+button {
+  width: 200px;
+  height: 50px;
+}
+
+.login-body {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #777777;
+  box-shadow: 2px 2px 5px 0 #777777;
+  max-width: 800px;
+  margin: 15px auto;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+.login-form h2 {
+  margin: 1rem auto 1.5rem auto;
+}
+
+.login-form-group {
+  display: flex;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.img-wrapper {
+  display: flex;
+  margin-right: 5px;
+  margin-bottom: 15px;
+  padding-bottom: 2px;
+}
+
+.img-wrapper img{
+  align-self: flex-end;
+  width: 30px;
+  height: 30px;
+}
+
+.remember-me {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  width: 162px;
+  height: auto;
+  font-size: 0.9rem;
+}
+
+.remember-me input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  margin: 0 5px 0 0;
+}
+
+div.alert.alert-danger, div.alert.alert-warning {
+  height: auto;
+  padding: 0;
+  margin: 5px 0 10px 0;
+  z-index: -1
+}
+
+div.alert.alert-danger span,
+div.alert.alert-warning span{
+  padding: 5px;
+  margin: auto;
+  display: block;
+}
+
+.container-nooverflow {
+  overflow: hidden;
+  border-radius: 4px;
+  margin-left: 35px;
+}
+
+.login-form-links {
+  margin: 0.2rem auto 1.5rem auto;
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+  
+.login-form-links a{
+  text-decoration: underline;
+}
+
+@media screen and (min-width: 320px) {
+  button {
+    width: 255px;
+  }
+
+  .form-group input:not([type="checkbox"]) {
+    width: 250px;
+  }
+
+  .remember-me  {
+    width: 212px;
+  }
+
+  div.alert.alert-danger, div.alert.alert-warning {
+    width: 250px;
+  }
+
+  .login-form-links {
+    width: 255px;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  button {
+    width: 280px;
+  }
+
+  .form-group input:not([type="checkbox"]) {
+    width: 280px;
+  }
+
+  .remember-me {
+    width: 242px;
+  }
+
+  div.alert.alert-danger, div.alert.alert-warning {
+    width: 280px;
+  }
+
+  .login-form-links {
+    width: 280px;
+  }
+}

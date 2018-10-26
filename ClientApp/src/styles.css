@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
+img.icon {
+  align-self: center;
+  width: 40px;
+  height: 40px;
+}
+img.icon:active {
+  padding: 0.1rem;
+}
+
+a {
+  color: #00036b;
+  text-decoration: none !important;
+}
+a:hover label {
+  color: #005994;
+  cursor: pointer;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}

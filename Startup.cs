@@ -2,7 +2,6 @@ using JWT_Demo.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -27,13 +26,24 @@ namespace JWT_Demo
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddIdentityCore<IdentityUser>(cfg =>
+            services.AddDbContext<DemoDbContext>();
+
+            //services.AddIdentityCore<IdentityUser>(cfg =>
+            //{
+            //    cfg.User.RequireUniqueEmail = true;
+            //})
+            //.AddEntityFrameworkStores<DemoDbContext>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>(cfg =>
             {
                 cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequiredUniqueChars = 0;
+                cfg.Password.RequireLowercase = false;
+                cfg.Password.RequireUppercase = false;
+                cfg.Password.RequiredLength = 8;
+                cfg.Password.RequireNonAlphanumeric = false;
             })
             .AddEntityFrameworkStores<DemoDbContext>();
-
-            services.AddDbContext<DemoDbContext>();
 
             services.AddAuthentication(cfg =>
             {
@@ -76,6 +86,7 @@ namespace JWT_Demo
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

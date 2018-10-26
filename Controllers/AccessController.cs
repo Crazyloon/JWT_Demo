@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace JWT_Demo.Controllers
 {
     [Route("api/account")]
@@ -49,14 +47,14 @@ namespace JWT_Demo.Controllers
                           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         };
 
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Security:Tokens:Key"]));
                         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                         var token = new JwtSecurityToken(
-                            _config["Tokens:Issuer"],
-                            _config["Tokens:Issuer"],
+                            _config["Security:Tokens:Issuer"],
+                            _config["Security:Tokens:Issuer"],
                             claims,
-                            expires: DateTime.Now.AddMinutes(30),
+                            expires: DateTime.Now.AddMinutes(int.Parse(_config["Security:Tokens:Duration"])),
                             signingCredentials: creds
                         );
 
@@ -86,7 +84,7 @@ namespace JWT_Demo.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok(new { id = user.Id });
             }
             return BadRequest(result.Errors.First().Description);
         }
