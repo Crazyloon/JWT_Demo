@@ -31,11 +31,12 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'home', component: HomeComponent},
+      { path: '', component: LoginComponent, pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
+      { path: 'logout', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'forgotpassword', component: ForgotPasswordComponent },
+      { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
       { path: 'counter', component: CounterComponent, canActivate: [AuthGuard]}, // AuthGuard on components we wish to protect against unauthorized users
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
 

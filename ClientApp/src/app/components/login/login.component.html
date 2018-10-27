@@ -1,7 +1,7 @@
 <div class="login-body">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
     <h2>Login</h2>
-    <p *ngIf="isUnauthorizedUser" class="alert alert-danger">{{unauthorizedUserMessage}}</p>
+    <p *ngIf="isUserUnauthorized" class="alert alert-danger">{{loginFailureMessage}}</p>
     <div class="login-form-group">
       <div class="img-wrapper">
         <img src="../../assets/icons/006-user.svg">
@@ -57,7 +57,7 @@
       </span>
     </div>
     <div class="container-nooverflow">
-      <button class="btn btn-primary bevel bevel-md">Login</button>
+      <button class="btn btn-primary">Login</button>
       <div class="login-form-links">
         <a routerLink="/register">Register</a>
         <a routerLink="/forgotpassword">Forgot Password?</a>

@@ -10,66 +10,54 @@ import { LoginCredentials } from '../../data/models/accountCredentials';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  isUnauthorizedUser: boolean;
-  constructoisUnauthorizedUser: boolean;
-  unauthorizedUserMessage: string;
+  isUserUnauthorized: boolean;
+  loginFailureMessage: string = "The username and password combination does not match our records.";
   loginForm = this.fb.group({
     username: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    rememberMe: [false]
   });
   @Input() savedUser: string;
-  @ViewChild('rememberMe') rememberMe: ElementRef;
+  //@ViewChild('rememberMe') rememberMe: ElementRef; // Ideally a form group should include all inputs. This line shows an example of how you can reference an HTML element on a page.
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
 
   ngOnInit() {
+    this.savedUser = this.accountService.getSavedUser();
     if (this.savedUser) {
-      this.loginForm.patchValue({ username: this.savedUser });
-      (this.rememberMe.nativeElement as HTMLInputElement).checked = true;
+      this.loginForm.patchValue({
+        username: this.savedUser,
+        rememberMe: true
+      });
     }
   }
 
   get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
+  get rememberMe() { return this.loginForm.get('rememberMe'); }
 
   onSubmit() {
-    const creds: LoginCredentials = { email: this.username.value, password: this.password.value };
-    const remembered = (this.rememberMe.nativeElement as HTMLInputElement).checked;
+    const remembered = this.rememberMe.value;
+    const creds: LoginCredentials = { email: this.username.value, password: this.password.value, rememberMe: remembered };
     if (creds.email && creds.password) {
-      this.accountService.login(creds).subscribe(token => {
-        console.log(token);
-        //if (token == 'Pending') {
-        //  this.isUnauthorizedUser = true;
-        //  this.unauthorizedUserMessage = pendingUserMessage;
-        //}
-        //else if (token == 'Disabled') {
-        //  this.isUnauthorizedUser = true;
-        //  this.unauthorizedUserMessage = disabledUserMessage;
-        //}
-        //else if (token) {
-        //  localStorage.setItem(TOKEN, token);
-        //  localStorage.setItem(USERID, this.accountService.getUserId(token));
-        //  if (remembered) {
-        //    localStorage.setItem(REMEMBERME, creds.email);
-        //  } else {
-        //    localStorage.removeItem(REMEMBERME);
-        //  }
-
-        //  const user = new User(this.username.value, token);
-        //  this.loginService.setUser(user);
-        //  this.loginService.userLoggedInEvent(user);
-
-        //  this.router.navigate(['/dashboard']);
-        //}
-        //else {
-        //  this.loginForm.setErrors(['Unabled to match username with password']);
-        //}
+      this.accountService.login(creds).subscribe(jwt => {
+        if (jwt) {
+          console.log(jwt); // An object should be returned with this JSON structure { token: "eyJhbG..." }
+          this.accountService.setToken(jwt.token);
+          this.router.navigate(['/home']);
+        }
+      }, (error) => {
+        console.error(error);
+        this.loginFailureMessage = "The username and password you provided to not match.";
       });
+    } else {
+      this.isUserUnauthorized = true;
+      this.loginFailureMessage = "You must enter a username and password to login.";
     }
   }
 
   onInput() {
-    this.isUnauthorizedUser = false;
+    this.isUserUnauthorized = false;
   }
 
   getRememberMe(): string {

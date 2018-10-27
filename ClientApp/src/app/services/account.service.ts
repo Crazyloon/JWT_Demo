@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/observable/of';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, tap, take, filter } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { LoginCredentials, RegisterCredentials } from '../data/models/accountCredentials';
 import * as claims from '../data/constants/claims';
+import { tokenName } from '@angular/compiler';
 
 
 const httpOptions = {
@@ -21,13 +22,15 @@ export class AccountService {
   private loginUrl: string;
   private registerUrl: string;
 
-  constructor(
-    private http: HttpClient
-  ) {
+  constructor(private http: HttpClient) {
     this.loginUrl = 'api/account/login';
     this.registerUrl = 'api/account/register';
   }
 
+  /**
+   * Creates an observable that can be used to log a new user in
+   * @param creds A LoginCredentials object that contains the users login details.
+   */
   login(creds: LoginCredentials): Observable<Token> {
     return this.http.post<Token>(this.loginUrl, creds, httpOptions).pipe(
       tap((key) => {
@@ -37,11 +40,21 @@ export class AccountService {
     );
   }
 
-  register(creds: RegisterCredentials): Observable<UserId> {
-    return this.http.post<UserId>(this.registerUrl, creds, httpOptions).pipe(
-      tap((url) => console.log(`register: ${creds.email} registered.`)),
-      catchError(this.handleError<UserId>('RegisterCredentials'))
-    );
+  /**
+   * Creates an observable that can be used to register a new user
+   * @param creds A RegisterCredentials object that contains details about the new user
+   */
+  register(creds: RegisterCredentials): Observable<UserId | void> {
+    return this.http.post<UserId>(this.registerUrl, creds, httpOptions)
+      //.map<HttpErrorResponse, void>(r => {
+      //    console.log("failed", r.error);
+      //  if (r.status != 200) {
+      //  }
+      //})
+      .pipe(
+        tap((url) => console.log(`register: ${creds.email} registered.`)),
+        catchError(this.handleError<UserId>('RegisterCredentials'))
+      );
   }
 
   /**
@@ -57,6 +70,13 @@ export class AccountService {
    */
   setToken(token: string) {
     localStorage.setItem(TOKEN, `Bearer ${token}`);
+  }
+
+  /**
+   * Removes the stored JWT from local storage
+   * */
+  removeToken(): any {
+    localStorage.removeItem(TOKEN);
   }
 
   /**
@@ -92,7 +112,7 @@ export class AccountService {
 
   /**
    * Checks for a token expiration date
-   * @param token
+   * @param token a JWT token that has an "exp" claim
    * @returns true if the token was not found or has expired
    */
   isTokenExpired(token?: string): boolean {
@@ -102,6 +122,22 @@ export class AccountService {
     const expirationDate = this.getTokenExpirationDate(token);
     if (expirationDate === undefined) return false;
     return !(expirationDate.valueOf() > new Date().valueOf());
+  }
+
+  /**
+   * Retrieves a "user" claim stored in a token
+   * @returns the username, or an empty string if no user is found.
+   * */
+  getSavedUser(token?: string): string {
+    if (!token) token = this.getToken();
+    if (!token) return "";
+
+    const decoded = jwt_decode(token);
+
+    if (decoded.user === undefined)
+      return "";
+
+    return decoded.user as string;
   }
 
   /**

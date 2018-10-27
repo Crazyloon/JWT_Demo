@@ -61,9 +61,10 @@ namespace JWT_Demo.Controllers
                         return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
                     }
                 }
+                return BadRequest("Username and Password do not match.");
             }
 
-            return BadRequest("Could not create token");
+            return BadRequest("Invalid Username or Password.");
         }
 
         [AllowAnonymous]
