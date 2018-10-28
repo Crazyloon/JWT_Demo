@@ -43,10 +43,14 @@ export class RegisterComponent implements OnInit {
     }
 
     this.accountService.register(this.creds)
-      .subscribe(redirectTo => {
-        if (redirectTo) {
+      .subscribe(response => {
+        console.log('response: ', response);
+        if (response.status == 200) {
+          console.info(response.body);
           this.router.navigate([`/login`]);
         }
+      }, (error) => {
+        console.log('error: ', error);
       }
     );
   }

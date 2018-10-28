@@ -26,7 +26,6 @@ export class AccountService {
     this.loginUrl = 'api/account/login';
     this.registerUrl = 'api/account/register';
   }
-
   /**
    * Creates an observable that can be used to log a new user in
    * @param creds A LoginCredentials object that contains the users login details.
@@ -37,24 +36,29 @@ export class AccountService {
         console.log(`login: ${creds.email} logged in.`);
       }),
       catchError(this.handleError<Token>('LoginCredentials'))
-    );
-  }
+      );
+    }
+    
 
-  /**
+    /**
    * Creates an observable that can be used to register a new user
    * @param creds A RegisterCredentials object that contains details about the new user
    */
-  register(creds: RegisterCredentials): Observable<UserId | void> {
-    return this.http.post<UserId>(this.registerUrl, creds, httpOptions)
+  register(creds: RegisterCredentials): Observable<HttpResponse<Object>> {
+    
+    return this.http.post<HttpResponse<Object> | any>(this.registerUrl, creds, { headers: httpOptions.headers, observe: "response" })
+      .pipe(
+        map(response => {
+          console.log(response);
+        }),
+        tap((url) => console.log(`register: ${creds.email} registered.`)),
+        catchError(this.handleError<HttpResponse<Object> | any>('RegisterCredentials'))
+      );
       //.map<HttpErrorResponse, void>(r => {
       //    console.log("failed", r.error);
       //  if (r.status != 200) {
       //  }
       //})
-      .pipe(
-        tap((url) => console.log(`register: ${creds.email} registered.`)),
-        catchError(this.handleError<UserId>('RegisterCredentials'))
-      );
   }
 
   /**
