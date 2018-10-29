@@ -3,6 +3,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { AccountService } from '../../services/account.service';
 import { Router } from '@angular/router';
 import { LoginCredentials } from '../../data/models/accountCredentials';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ import { LoginCredentials } from '../../data/models/accountCredentials';
 })
 export class LoginComponent implements OnInit {
   isUserUnauthorized: boolean;
-  loginFailureMessage: string = "The username and password combination does not match our records.";
+  loginFailureMessage: string = "The Username and Password combination does not match our records.";
   loginForm = this.fb.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
@@ -30,6 +31,8 @@ export class LoginComponent implements OnInit {
         rememberMe: true
       });
     }
+
+    this.loginForm.valueChanges.subscribe(() => this.isUserUnauthorized = false)
   }
 
   get username() { return this.loginForm.get('username'); }
@@ -40,24 +43,20 @@ export class LoginComponent implements OnInit {
     const remembered = this.rememberMe.value;
     const creds: LoginCredentials = { email: this.username.value, password: this.password.value, rememberMe: remembered };
     if (creds.email && creds.password) {
-      this.accountService.login(creds).subscribe(jwt => {
-        if (jwt) {
-          console.log(jwt); // An object should be returned with this JSON structure { token: "eyJhbG..." }
-          this.accountService.setToken(jwt.token);
+      this.accountService.login(creds).subscribe(response => {
+        if (response.status == 200) {
+          let data = response.body;
+          this.accountService.setToken(data.token);
           this.router.navigate(['/home']);
         }
-      }, (error) => {
-        console.error(error);
-        this.loginFailureMessage = "The username and password you provided to not match.";
+      }, (error: HttpErrorResponse) => {
+        this.isUserUnauthorized = true;
+        this.loginFailureMessage = error.error;
       });
     } else {
       this.isUserUnauthorized = true;
-      this.loginFailureMessage = "You must enter a username and password to login.";
+      this.loginFailureMessage = "You must enter a Username and Password to login.";
     }
-  }
-
-  onInput() {
-    this.isUserUnauthorized = false;
   }
 
   getRememberMe(): string {

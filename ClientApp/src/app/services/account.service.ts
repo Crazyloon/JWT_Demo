@@ -30,15 +30,12 @@ export class AccountService {
    * Creates an observable that can be used to log a new user in
    * @param creds A LoginCredentials object that contains the users login details.
    */
-  login(creds: LoginCredentials): Observable<Token> {
-    return this.http.post<Token>(this.loginUrl, creds, httpOptions)
+  login(creds: LoginCredentials): Observable<HttpResponse<Token>> {
+    return this.http.post<Token>(this.loginUrl, creds, { ...httpOptions, observe: "response" })
     .pipe(
-      tap((key) => {
-        console.log(`login: ${creds.email} logged in.`);
-      }),
-      catchError(this.handleError<Token>('LoginCredentials'))
-      );
-    }
+      catchError((err) => Observable.throw(err))
+    );
+  }
     
 
     /**
@@ -46,16 +43,10 @@ export class AccountService {
    * @param creds A RegisterCredentials object that contains details about the new user
    */
   register(creds: RegisterCredentials): Observable<HttpResponse<UserId>> {    
-    return this.http.post(this.registerUrl, creds, { headers: httpOptions.headers, observe: "response" })
+    return this.http.post<UserId>(this.registerUrl, creds, { ...httpOptions, observe: "response" })
     .pipe(
-      tap((url) => console.log(`register: ${creds.email} registered.`)),
       catchError(err => Observable.throw(err))
     );
-      //.map<HttpErrorResponse, void>(r => {
-      //    console.log("failed", r.error);
-      //  if (r.status != 200) {
-      //  }
-      //})
   }
 
   /**
@@ -139,23 +130,6 @@ export class AccountService {
       return "";
 
     return decoded.user as string;
-  }
-
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
   }
 }
 
