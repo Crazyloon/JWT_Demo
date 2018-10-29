@@ -60,7 +60,7 @@ div.alert.alert-warning span {
 
 .container-nooverflow {
   overflow: hidden;
-  margin: 2rem 0 2rem 35px;
+  margin: 2rem 20px 2rem 35px;
   border-radius: 4px;
 }
 

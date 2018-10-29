@@ -80,6 +80,7 @@ div.alert.alert-warning span{
   overflow: hidden;
   border-radius: 4px;
   margin-left: 35px;
+  margin-right: 20px;
 }
 
 .login-form-links {

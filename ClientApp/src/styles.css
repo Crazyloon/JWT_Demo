@@ -22,3 +22,7 @@ a:hover label {
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+form > div[class$="-form-group"]{
+  margin-right: 20px;
+}

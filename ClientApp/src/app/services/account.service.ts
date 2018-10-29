@@ -31,7 +31,8 @@ export class AccountService {
    * @param creds A LoginCredentials object that contains the users login details.
    */
   login(creds: LoginCredentials): Observable<Token> {
-    return this.http.post<Token>(this.loginUrl, creds, httpOptions).pipe(
+    return this.http.post<Token>(this.loginUrl, creds, httpOptions)
+    .pipe(
       tap((key) => {
         console.log(`login: ${creds.email} logged in.`);
       }),
@@ -44,16 +45,12 @@ export class AccountService {
    * Creates an observable that can be used to register a new user
    * @param creds A RegisterCredentials object that contains details about the new user
    */
-  register(creds: RegisterCredentials): Observable<HttpResponse<Object>> {
-    
-    return this.http.post<HttpResponse<Object> | any>(this.registerUrl, creds, { headers: httpOptions.headers, observe: "response" })
-      .pipe(
-        map(response => {
-          console.log(response);
-        }),
-        tap((url) => console.log(`register: ${creds.email} registered.`)),
-        catchError(this.handleError<HttpResponse<Object> | any>('RegisterCredentials'))
-      );
+  register(creds: RegisterCredentials): Observable<HttpResponse<UserId>> {    
+    return this.http.post(this.registerUrl, creds, { headers: httpOptions.headers, observe: "response" })
+    .pipe(
+      tap((url) => console.log(`register: ${creds.email} registered.`)),
+      catchError(err => Observable.throw(err))
+    );
       //.map<HttpErrorResponse, void>(r => {
       //    console.log("failed", r.error);
       //  if (r.status != 200) {

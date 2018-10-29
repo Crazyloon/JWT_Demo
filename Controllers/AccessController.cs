@@ -33,38 +33,36 @@ namespace JWT_Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-
-                if (user != null)
-                {
-                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-                    if (result.Succeeded)
-                    {
-
-                        var claims = new[]
-                        {
-                          new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        };
-
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Security:Tokens:Key"]));
-                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                        var token = new JwtSecurityToken(
-                            _config["Security:Tokens:Issuer"],
-                            _config["Security:Tokens:Issuer"],
-                            claims,
-                            expires: DateTime.Now.AddMinutes(int.Parse(_config["Security:Tokens:Duration"])),
-                            signingCredentials: creds
-                        );
-
-                        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
-                    }
-                }
-                return BadRequest("Username and Password do not match.");
+              return BadRequest("Invalid Username or Password.");
             }
 
-            return BadRequest("Invalid Username or Password.");
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+            {
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                if (result.Succeeded)
+                {
+                    var claims = new[]
+                    {
+                      new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                      new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Security:Tokens:Key"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                        _config["Security:Tokens:Issuer"],
+                        _config["Security:Tokens:Issuer"],
+                        claims,
+                        expires: DateTime.Now.AddMinutes(int.Parse(_config["Security:Tokens:Duration"])),
+                        signingCredentials: creds
+                    );
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                }
+            }
+            return BadRequest("Username and Password do not match.");            
         }
 
         [AllowAnonymous]
@@ -99,7 +97,7 @@ namespace JWT_Demo.Controllers
 
     public class RegisterViewModel : LoginViewModel
     {
-        // Add additional fields to capture more information about the user
-        // Add those fields to a class that extends IdentityUser to store them in the database
+        // TODO:
+        // Add additional registration fields
     }
 }
