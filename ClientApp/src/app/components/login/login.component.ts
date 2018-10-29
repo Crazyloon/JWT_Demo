@@ -4,6 +4,8 @@ import { AccountService } from '../../services/account.service';
 import { Router } from '@angular/router';
 import { LoginCredentials } from '../../data/models/accountCredentials';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoginNotificationService } from '../../services/login-notification.service';
+import { User } from '../../data/models/user';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,7 @@ export class LoginComponent implements OnInit {
   @Input() savedUser: string;
   //@ViewChild('rememberMe') rememberMe: ElementRef; // Ideally a form group should include all inputs. This line shows an example of how you can reference an HTML element on a page.
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
+  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router, private loginService: LoginNotificationService) { }
 
   ngOnInit() {
     this.savedUser = this.accountService.getSavedUser();
@@ -47,6 +49,9 @@ export class LoginComponent implements OnInit {
         if (response.status == 200) {
           let data = response.body;
           this.accountService.setToken(data.token);
+
+          this.loginService.userLoggedInEvent(new User(creds.email, data.token));
+          
           this.router.navigate(['/home']);
         }
       }, (error: HttpErrorResponse) => {

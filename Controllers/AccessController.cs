@@ -28,10 +28,16 @@ namespace JWT_Demo.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("protected")]
+        public IActionResult AccessProtectedResource(){
+          return Ok(new { result = "Success"});
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> GenerateToken([FromBody] LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
               return BadRequest("Invalid Username or Password.");
             }
@@ -54,7 +60,7 @@ namespace JWT_Demo.Controllers
 
                     var token = new JwtSecurityToken(
                         _config["Security:Tokens:Issuer"],
-                        _config["Security:Tokens:Issuer"],
+                        _config["Security:Tokens:Audience"],
                         claims,
                         expires: DateTime.Now.AddMinutes(int.Parse(_config["Security:Tokens:Duration"])),
                         signingCredentials: creds

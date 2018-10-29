@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 
 namespace JWT_Demo
@@ -48,10 +49,13 @@ namespace JWT_Demo
             services.AddAuthentication(cfg =>
             {
                 cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(cfg =>
             {
+                cfg.RequireHttpsMetadata = false; // TODO: set this true in production
+                cfg.SaveToken = true;
                 cfg.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
@@ -60,7 +64,7 @@ namespace JWT_Demo
                     ValidAudience = _config["Security:Tokens:Audience"],
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Security:Tokens:Key"])),
-
+                    ClockSkew = TimeSpan.Zero // remove delay of token when expire
                 };
             });
             // In production, the Angular files will be served from this directory

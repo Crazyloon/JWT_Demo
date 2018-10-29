@@ -17,7 +17,7 @@
                 <span class='glyphicon glyphicon-home'></span> Home
               </a>
             </li>
-            <li [routerLinkActive]='["link-active"]'>
+            <li *ngIf='!isUserLoggedIn' [routerLinkActive]='["link-active"]'>
               <a [routerLink]='["/login"]' (click)='collapse()'>
                 <span class='glyphicon glyphicon-log-in'></span> Login
               </a>
@@ -32,10 +32,8 @@
                 <span class='glyphicon glyphicon-th-list'></span> Fetch data
               </a>
             </li>
-            <li>
-              <a [routerLink]='["/logout"]' (click)='logout()'>
-                <span class="glyphicon glyphicon-log-out"></span> Log out
-              </a>
+            <li *ngIf='isUserLoggedIn'>
+              <button class="btn btn-sm btn-danger" (click)='logout()'><span class="glyphicon glyphicon-log-out"></span> Log out</button>
             </li>
           </ul>
         </div>

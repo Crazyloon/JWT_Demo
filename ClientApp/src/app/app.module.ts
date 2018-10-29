@@ -14,6 +14,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AccountService } from './services/account.service';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { LoginNotificationService } from './services/login-notification.service';
 
 @NgModule({
   declarations: [
@@ -33,10 +34,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     RouterModule.forRoot([
       { path: '', component: LoginComponent, pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
-      { path: 'logout', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'forgotpassword', component: ForgotPasswordComponent },
-      { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
+      { path: 'home', component: HomeComponent },
       { path: 'counter', component: CounterComponent, canActivate: [AuthGuard]}, // AuthGuard on components we wish to protect against unauthorized users
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
 
@@ -44,6 +44,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
   ],
   providers: [
     AccountService,
+    LoginNotificationService,
     AuthGuard
   ],
   bootstrap: [AppComponent]

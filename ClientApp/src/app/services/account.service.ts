@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { of } from 'rxjs/observable/of';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, tap, take, filter } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import * as jwt_decode from 'jwt-decode';
-import { LoginCredentials, RegisterCredentials } from '../data/models/accountCredentials';
 import * as claims from '../data/constants/claims';
-import { tokenName } from '@angular/compiler';
+import { LoginCredentials, RegisterCredentials } from '../data/models/accountCredentials';
 
 
 const httpOptions = {
