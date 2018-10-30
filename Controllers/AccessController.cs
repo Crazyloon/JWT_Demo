@@ -28,12 +28,6 @@ namespace JWT_Demo.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("protected")]
-        public IActionResult AccessProtectedResource(){
-          return Ok(new { result = "Success"});
-        }
-
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> GenerateToken([FromBody] LoginViewModel model)
         {

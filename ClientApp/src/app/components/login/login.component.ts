@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
     rememberMe: [false]
   });
   @Input() savedUser: string;
-  //@ViewChild('rememberMe') rememberMe: ElementRef; // Ideally a form group should include all inputs. This line shows an example of how you can reference an HTML element on a page.
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router, private loginService: LoginNotificationService) { }
 

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AccountService } from '../../services/account.service';
 import { LoginNotificationService } from '../../services/login-notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,7 +12,7 @@ export class NavMenuComponent {
   @Input() isUserLoggedIn = false;
   isExpanded = false;
 
-  constructor(private accountService: AccountService, private loginService: LoginNotificationService) { }
+  constructor(private accountService: AccountService, private loginService: LoginNotificationService, private router: Router) { }
 
   collapse() {
     this.isExpanded = false;
@@ -25,5 +26,6 @@ export class NavMenuComponent {
     this.collapse();
     this.accountService.removeToken();
     this.loginService.userLoggedOutEvent();
+    this.router.navigate(['/home']);
   }
 }

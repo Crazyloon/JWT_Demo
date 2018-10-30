@@ -29,12 +29,6 @@ namespace JWT_Demo
 
             services.AddDbContext<DemoDbContext>();
 
-            //services.AddIdentityCore<IdentityUser>(cfg =>
-            //{
-            //    cfg.User.RequireUniqueEmail = true;
-            //})
-            //.AddEntityFrameworkStores<DemoDbContext>();
-
             services.AddIdentity<IdentityUser, IdentityRole>(cfg =>
             {
                 cfg.User.RequireUniqueEmail = true;

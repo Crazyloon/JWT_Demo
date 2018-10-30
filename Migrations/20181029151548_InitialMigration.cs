@@ -48,20 +48,6 @@ namespace JWT_Demo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Presenters",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Presenters", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -167,28 +153,6 @@ namespace JWT_Demo.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Demos",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    SpeakerId = table.Column<long>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Summary = table.Column<string>(nullable: true),
-                    Duration = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Demos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Demos_Presenters_SpeakerId",
-                        column: x => x.SpeakerId,
-                        principalTable: "Presenters",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -227,11 +191,6 @@ namespace JWT_Demo.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Demos_SpeakerId",
-                table: "Demos",
-                column: "SpeakerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -252,16 +211,10 @@ namespace JWT_Demo.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Demos");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Presenters");
         }
     }
 }
